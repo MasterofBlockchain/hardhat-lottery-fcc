@@ -8,12 +8,10 @@
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24"
   },
-  "scripts": {
-    
-  },
+  "scripts": {},
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
-    "dotenv": "^16.0.1"
-    
+    "dotenv": "^16.0.1",
+    "solhint": "^3.3.7"
   }
 }
