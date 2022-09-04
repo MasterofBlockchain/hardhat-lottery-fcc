@@ -13,15 +13,15 @@ import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 //errors
 error lottery__NotEnoughFUnds();
 error lottery__TransferFailed();
-error lottery__NotOpeen();
-error lottery__UpKeepNotNeeded(address(this).balance,s_players.length,uint256(s_raffleState));
+error lottery__NotOpen();
+error lottery__UpKeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint256 raffleState);
+
 /**
  * @title A sample Raffle or lottery contract
  * @author rob
  * @notice this acc is for creating an untemperable decentarlised way lotttery
  * @dev this implements chainlink VRFv2 and chainlinkKeepers
  */
-        
 
 contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     /* Type Declartion */
@@ -61,16 +61,16 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         bytes32 gaslane,
         uint64 subscriptionId,
         uint32 callbackGasLimit,
-        uint256 interval;
+        uint256 interval
     ) VRFConsumerBaseV2(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator);
         i_gaslane = gaslane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
-        s_raffleState = RaffleState.open;
+        s_raffleState = RaffleState.OPEN;
         s_lastTimeStamp = block.timestamp;
-        i_interval= interval;
+        i_interval = interval;
     }
 
     function EnterLottery() public payable {
@@ -79,7 +79,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         }
 
         if (s_raffleState != RaffleState.OPEN) {
-            revert Raffle__NotOpeen();
+            revert lottery__NotOpen();
         }
         s_players.push(payable(msg.sender));
         emit LotteryEnter(msg.sender);
@@ -97,30 +97,43 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
      * 4- lottery shall be in `open-state`.
      */
 
-    
     function checkUpkeep(
         //bytes calldata /* checkData */
-        //since we are passing ("")in perfromUpkeep 
-        //calldata does not work with `strings` so `memory` keyword 
+        //since we are passing ("")in perfromUpkeep
+        //calldata does not work with `strings` so `memory` keyword
         bytes memory /* checkData*/
-    ) public override returns(bool upkeepNeeded,bytes memory /* performData */) {
-        bool isOpen = (RaffleState.open == s_raffleState);
-        bool timePassed = ((block.timestamp-s_lastTimeStamp)>i_interval);
-        bool hasplayer = (s_players.length >0);
-        bool hasbalance = address(this).balance >0;
-         upKeepNeeded = (isOpen && timePassed && hasplayer && hasbalance );
+    )
+        public
+        view
+        override
+        returns (
+            bool upkeepNeeded,
+            bytes memory /* performData */
+        )
+    {
+        bool isOpen = (RaffleState.OPEN == s_raffleState);
+        bool timePassed = ((block.timestamp - s_lastTimeStamp) > i_interval);
+        bool hasplayer = (s_players.length > 0);
+        bool hasbalance = address(this).balance > 0;
+        upkeepNeeded = (isOpen && timePassed && hasplayer && hasbalance);
         //current block time stamp = block.timestamp
         //time of deplying time stamp = last blocktimeStamp
         //Intervel = time mentoned in the constructor for the inteval
         //(block.timestamp-lastTimeStamp)>interval
     }
-    
-// function requestRandomWords() external {
-    //this function is switched from `requestRandowmWords` to ``PerfomKeep` 
-    function performupkeep(bytes calldata /*performData*/)external override{
-        (bool upKeepNeeded,)= checkUpkeep("");
-        if(!upKeepNeeded){
-            revert lottery__UpKeepNotNeeded(address(this).balance,s_players.length,uint256(s_raffleState));
+
+    // function requestRandomWords() external {
+    //this function is switched from `requestRandowmWords` to ``PerfomKeep`
+    function performUpkeep(
+        bytes calldata /*performData*/
+    ) external override {
+        (bool upkeepNeeded, ) = checkUpkeep("");
+        if (!upkeepNeeded) {
+            revert lottery__UpKeepNotNeeded(
+                address(this).balance,
+                s_players.length,
+                uint256(s_raffleState)
+            );
         }
 
         //since we are fetching random number lottery needs to be paused/stopped
@@ -147,7 +160,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         //since we have a winner announced now.lottery shall be open.
         s_raffleState = RaffleState.OPEN;
         s_players = new address payable[](0);
-        s_lastTimeStamp= block.timeStamp;
+        s_lastTimeStamp = block.timestamp;
 
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
@@ -169,21 +182,25 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     function getRecentWinner() public view returns (address) {
         return s_recentWinner;
     }
-    function getRaffleState()public view returns(RaffleState){
+
+    function getRaffleState() public view returns (RaffleState) {
         return s_raffleState;
     }
-    function getNumwords()public pure returns(uint256){
-        return NUM_WORDS;
 
+    function getNumwords() public pure returns (uint256) {
+        return NUM_WORDS;
     }
-    function getNumberOfPlayers()public view returns(uint256){
+
+    function getNumberOfPlayers() public view returns (uint256) {
         return s_players.length;
     }
-    function getLatestTimeStamp()public view returns(uint256){
+
+    function getLatestTimeStamp() public view returns (uint256) {
         return s_lastTimeStamp;
     }
+
     //this is `pure` because `REQUEST_CONFIRMATIONS` is constant.
-    function getRequestCOnfirmations()public pure returns(uint256){
+    function getRequestCOnfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATIONS;
     }
 }
