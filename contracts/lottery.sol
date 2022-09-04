@@ -4,11 +4,18 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 
-/*VRFCoordinatorV2Interface uses function()requestRandomWords*/
-// and it helps us to generate randowm number.
-
-/** VRFConsumerBaseV2 uses function ()fulfillRandomWords */
-//after the random number generation this function help us to excecutve
+/**
+ * @notice VRFCoordinatorV2Interface
+ * VRFCoordinatorV2Interface uses function()requestRandomWords
+ and it helps us to generate randowm number.
+*@notice VRFConsumerBaseV2
+* VRFConsumerBaseV2 use `function ()fulfillRandomWords` 
+after the random number generation this function help us to excecutve the function.
+*@notice KeeperCompatibleInterface.
+* use two functions `checkUpkeep` and perfomupkeep`.
+* `checkupkey`-- checks all the data and returna `true` if eveything is as per the code defination.
+* performupkeep` -- when its recives a `true` from `cjeckupkeep` it starts to execute.
+*/
 
 //errors
 error lottery__NotEnoughFUnds();
@@ -51,20 +58,18 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     event RequestedRaffleWinner(uint256 indexed requestId);
     event winnerPIcked(address indexed winner);
 
-    /**modifiers */
-
     /* functions */
 
     constructor(
-        address vrfCoordinator,
+        address vrfCoordinatorV2, //contract address
         uint256 entranceFee,
         bytes32 gaslane,
         uint64 subscriptionId,
         uint32 callbackGasLimit,
         uint256 interval
-    ) VRFConsumerBaseV2(vrfCoordinator) {
+    ) VRFConsumerBaseV2(vrfCoordinatorV2) {
         i_entranceFee = entranceFee;
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator);
+        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gaslane = gaslane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
@@ -86,25 +91,27 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     }
 
     /**
-     * --We'll have `checkupkeep` and `performupkeep` functions from keepers
-     * -- `checkup` functions helps us to check if all things are in place and returns a `true` value.
-     * -- If `checkup` returns `true` then `PerformUpKeep` execute the functions based on
-     * `timeValue` or `customelogic`.
-     * --Check these in `checkupkeepers` function.
+     
+     * --`Checkupkeep` checks mentioned below functions.
      * 1- For `checkup` to work `interval time` should have passed.
      * 2- the lottery should have atleast `1` player and have some `eth`.
      * 3-our `subscription` should be fudned with `link`.
      * 4- lottery shall be in `open-state`.
      */
 
+    //bytes calldata /* checkData */
+    //since we are passing ("")in perfromUpkeep
+    //calldata does not work with `strings` so `memory` keyword
+
+    //current block time stamp = block.timestamp
+    //time of deplying time stamp = last blocktimeStamp
+    //Intervel = time mentoned in the constructor for the inteval
+    //(block.timestamp-lastTimeStamp)>interval
+
     function checkUpkeep(
-        //bytes calldata /* checkData */
-        //since we are passing ("")in perfromUpkeep
-        //calldata does not work with `strings` so `memory` keyword
         bytes memory /* checkData*/
     )
         public
-        view
         override
         returns (
             bool upkeepNeeded,
@@ -116,10 +123,6 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         bool hasplayer = (s_players.length > 0);
         bool hasbalance = address(this).balance > 0;
         upkeepNeeded = (isOpen && timePassed && hasplayer && hasbalance);
-        //current block time stamp = block.timestamp
-        //time of deplying time stamp = last blocktimeStamp
-        //Intervel = time mentoned in the constructor for the inteval
-        //(block.timestamp-lastTimeStamp)>interval
     }
 
     // function requestRandomWords() external {
