@@ -1,23 +1,34 @@
 /**
- * @notice `deploy` folder is the `script folder` of `hardhat`.
+ 
  * @notice `deploy folder` we will have `00-mock` and `01-deploy`
  *@notice we have written script for `mock` in `00-mock` and we are fetching `00-mock`
  while mentioning `getcontract` in `01-deploy` so `01-deploy` could fetch
   the data of `00-mock`.now `01-deploy` is merged with `00-mock`.
-  *@notice when we run ` npx hardhat deploy` its shows us `two deployments`. one for mocks and
-   other for lottery contract. and gives us two contract address which are `automaticlly generated` and cant be tracked or traced.
+  @read and now when we run ` npx hardhat deploy` data will be fetched from `01-deploy`.    
+  * @read if we run `npx hardhat deploy` mock and lottery both accounts get deployed locally.because 
+   * fetching data from `01-deploy` .
+   * @read if we run `npx hardhat deploy --network goerli` it just deployed `goerli` because it use
+   * `if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY)`
+   * this above statemtnt to udnerstand if it is locally or testnet.
+
+
    *@read there are two types of accounts in ethereum.`contract addresses`which are automatically generated and does not have public and private key.
    * second type of accounts are `user accounts` or `EOA`- (extrenally owner accounts).
    * which are regular accounts and comes with private and public key.
    * @read when we run `npx hardhat node` we are given `EOA` accounts.
    * @read when we run `npx hardhat deploy` we are given `contract accounts.
    * 
-   * @read if we run `npx hardhat deploy` mock and lottery accounts get deployed locally.because 
-   * fetching data from `01-deploy` and it mentioned both accounts
-   * @read if we run `npx hardhat deploy --network goerli` it just deployed `goerli` because it use
-   * `if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY)`
-   * this above statemtnt to udnerstand 
+   * 
+   * @notice about 00-mock and 01-deploy 
+   * See, first of all there is an order precedence : 00 and 01.
+   * Consequently, our "00 deploy mocks" script is used first by 
+   * Hardhat--which essentially deploys our Mock contract.
+   * 0nly then is our "01 deploy" is used.
 
+
+
+
+   
 
  */
 
@@ -35,10 +46,7 @@ const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2")
  * then `VRFCoordinatorV2Mock` is the contract and script of it for deployment is `00-deploy-mocks.js`
  * @notice `lottery is the contract and script of it for deployment is in `deploy` folder which is
  * ` 01-deploy-lottery.js`
- * @notice Wehn we run ` npx hardhat deploy ` both contracts with the help of thier script
- * get` deployed` on develement chain.
- * @notice when we  run `npx hardhat deploy --network goerli` only actual contract and
- * script get deployed on testnet
+ 
  */
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
