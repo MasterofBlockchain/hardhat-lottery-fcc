@@ -37,6 +37,10 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         CALCULATING
     }
     /*state Variable */
+
+    //We use `immutable` when we have to go through`constructor` to add data.
+    //we use `constant` when we have data in `stateVariable` which cant be change after deployed.
+
     uint256 private immutable i_entranceFee;
     address payable[] private s_players;
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
@@ -61,7 +65,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     /* functions */
 
     constructor(
-        address vrfCoordinatorV2, //contract address
+        address vrfCoordinatorV2, //contract address of vrfCoordinatorV2
         uint256 entranceFee,
         bytes32 gaslane,
         uint64 subscriptionId,
