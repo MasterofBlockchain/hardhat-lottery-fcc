@@ -24,6 +24,14 @@
    * Consequently, our "00 deploy mocks" script is used first by 
    * Hardhat--which essentially deploys our Mock contract.
    * 0nly then is our "01 deploy" is used.
+   * 
+   * * @notice `VRFCoordinatorV2Mock` is the mock account of "VRFCoordinatorV2Interface".
+ * which helps us to get `random number`
+ * its script for `deployment` is `00-deploy-mocks.js` in `deploy` folder.
+ * when we `deploy` on develempent chain(locally)
+ * then `VRFCoordinatorV2Mock` is the contract and script of it for deployment is `00-deploy-mocks.js`
+ * @notice `lottery is the contract and script of it for deployment is in `deploy` folder which is
+ * ` 01-deploy-lottery.js`
 
 
 
@@ -37,17 +45,6 @@ const { developmentChains, networkConfig } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2")
 
-/**
- *
- * @notice `VRFCoordinatorV2Mock` is the mock account of "VRFCoordinatorV2Interface".
- * which helps us to get `random number`
- * its script for `deployment` is `00-deploy-mocks.js` in `deploy` folder.
- * when we `deploy` on develempent chain(locally)
- * then `VRFCoordinatorV2Mock` is the contract and script of it for deployment is `00-deploy-mocks.js`
- * @notice `lottery is the contract and script of it for deployment is in `deploy` folder which is
- * ` 01-deploy-lottery.js`
- 
- */
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
