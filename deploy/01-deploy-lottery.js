@@ -32,7 +32,10 @@
  * then `VRFCoordinatorV2Mock` is the contract and script of it for deployment is `00-deploy-mocks.js`
  * @notice `lottery is the contract and script of it for deployment is in `deploy` folder which is
  * ` 01-deploy-lottery.js`
-
+ * //its for console.log 
+//npx hardhat console --network localhost
+const contract = await ethers.getContract("lottery")
+console.log(contract.address)
 
 
 

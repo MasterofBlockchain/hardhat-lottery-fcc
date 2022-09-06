@@ -31,6 +31,11 @@ module.exports = {
             url: GOERLI_RPC_URL,
             accounts: [PRIVATE_KEY],
         },
+        localhost: {
+            url: LOCAL_HOST_API,
+            //accounts:
+            chainId: 31337,
+        },
     },
     solidity: "0.8.7",
     namedAccounts: {
@@ -40,5 +45,13 @@ module.exports = {
         user: {
             default: 1,
         },
+    },
+    gasReporter: {
+        enabled: false,
+        outputFile: "gas-report.txt",
+        noColors: true,
+        currency: "USD",
+        coinmarketcap: COIN_MARKET_CAP_API,
+        token: "MATIC",
     },
 }

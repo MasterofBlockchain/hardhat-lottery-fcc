@@ -178,7 +178,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
     /**view and pure */
 
-    function entranceFee() public view returns (uint256) {
+    function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
     }
 
@@ -209,5 +209,9 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     //this is `pure` because `REQUEST_CONFIRMATIONS` is constant.
     function getRequestCOnfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATIONS;
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
     }
 }
