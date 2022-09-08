@@ -84,14 +84,14 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
     function EnterLottery() public payable {
         if (msg.value < i_entranceFee) {
-            revert lottery__NotEnoughFUnds();
+            revert lottery__NotEnoughFUnds(); // test 1
         }
 
         if (s_raffleState != RaffleState.OPEN) {
-            revert lottery__NotOpen();
+            revert lottery__NotOpen(); //test 4
         }
-        s_players.push(payable(msg.sender));
-        emit LotteryEnter(msg.sender);
+        s_players.push(payable(msg.sender)); //test 2
+        emit LotteryEnter(msg.sender); //test 3
     }
 
     /**
@@ -118,6 +118,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         public
         override
         returns (
+            // swtiched `external` to public so we can call this function
             bool upkeepNeeded,
             bytes memory /* performData */
         )
@@ -135,6 +136,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         bytes calldata /*performData*/
     ) external override {
         (bool upkeepNeeded, ) = checkUpkeep("");
+        // require(upkeepNeeded, "Upkeep not needed");
         if (!upkeepNeeded) {
             revert lottery__UpKeepNotNeeded(
                 address(this).balance,
