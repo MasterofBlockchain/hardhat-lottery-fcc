@@ -54,4 +54,7 @@ module.exports = {
         coinmarketcap: COIN_MARKET_CAP_API,
         token: "MATIC",
     },
+    mocha: {
+        timeout: 300000, //300seconds
+    },
 }

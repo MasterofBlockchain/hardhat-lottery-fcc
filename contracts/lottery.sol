@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "hardhat/console.sol";
 
 /**
  * @notice VRFCoordinatorV2Interface
@@ -92,6 +93,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
         }
         s_players.push(payable(msg.sender)); //test 2
         emit LotteryEnter(msg.sender); //test 3
+        //console.log(msg.value, i_entranceFee);
     }
 
     /**
@@ -135,8 +137,13 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     function performUpkeep(
         bytes calldata /*performData*/
     ) external override {
+        // if its true then it will pass(1)
         (bool upkeepNeeded, ) = checkUpkeep("");
         // require(upkeepNeeded, "Upkeep not needed");
+        // 1>2 false // one is bigger to two.
+        // !1>2 true // one is not bigger to two. || `!` means logical not.
+
+        //if its false it will get exceuted(1)
         if (!upkeepNeeded) {
             revert lottery__UpKeepNotNeeded(
                 address(this).balance,
