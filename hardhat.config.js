@@ -55,6 +55,9 @@ module.exports = {
         token: "MATIC",
     },
     mocha: {
-        timeout: 300000, //300seconds
+        timeout: 500000, //500seconds
+    },
+    etherscan: {
+        apiKey: ETHERSCAN_API_KEY,
     },
 }

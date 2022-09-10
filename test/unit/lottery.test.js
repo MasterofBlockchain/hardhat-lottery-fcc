@@ -86,29 +86,37 @@ const { assert, expect } = require("chai")
            *It will use '' evm_increaseTime"" to fast forward the given amount of time
            *(which is mentioned in helper-hardhat) and
            *start to count from '1'(or any no. Of time we mention here than '1') and execute the function.
-           *@read we use `callStatic` for stimulation. its a function of `ethers.js`
-           *what callStatic does is it tells us the nodes to "pretend" that the call is not state-changing. Consequently,
+           *@read -----> ~`call-static`
+           *we use `callStatic` for stimulation. its a function of `ethers.js`.
+           *what callStatic does is ->it tells the nodes to not to chnage the state of blockchain since 
+           *we are stimulating and trying to test.
            *they will return the result accordingly which does not lead to a change in state.
            *await lottery.checkupkeep([]) //this will make a transaction and change the state of transaction because its a `public` function.
            *if this function was a `public view` it would have returned the `view` only.
-           *
+           * hence we are using `callStatic` while testing for stimulation.
+           *@read Hey In this case, we can simplify the expression assert(!upkeepNeeded) as assert.equal(upkeepNeeded, false)
+           *This is to mean that we want to assert that upkeepNeeded should be equal to false.
+           * Using assert(!upkeepNeeded) is just a shorthand shortcut way of writing assert.equal(upkeepNeeded, false)
+           
            */
           describe("checkUpKeeep", function () {
               it("returns false if peole have not sent any eth", async function () {
                   await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
                   await network.provider.send("evm_mine", [])
                   const { upkeepNeeded } = await lottery.callStatic.checkUpkeep([])
-                  assert(!upkeepNeeded) //?
+
+                  // assert.equal(upkeepNeeded,false) //or equal to below
+                  assert(!upkeepNeeded)
               })
               it("returns false if lottery aint open", async function () {
                   await lottery.EnterLottery({ value: entranceFee })
                   await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
                   await network.provider.send("evm_mine", [])
-                  await lottery.performUpkeep([])
+                  await lottery.performUpkeep([]) // performUp keep is requestRandomWords function
                   const lotteryState = await lottery.getRaffleState()
                   const { upkeepNeeded } = await lottery.callStatic.checkUpkeep([])
                   assert.equal(lotteryState.toString(), "1") //?
-                  assert.equal(upkeepNeeded, false) //?
+                  assert.equal(upkeepNeeded, false)
               })
               //copy from github
               it("returns false if enough time hasn't passed", async () => {
