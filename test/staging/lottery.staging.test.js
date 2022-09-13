@@ -1,5 +1,5 @@
-const { getNamedAccounts, deployments, ethers, network } = require("hardhat")
-const { developmentChains, networkConfig } = require("../../helper-hardhat-config")
+const { getNamedAccounts, ethers, network } = require("hardhat")
+const { developmentChains } = require("../../helper-hardhat-config")
 const { assert, expect } = require("chai")
 
 developmentChains.includes(network.name)
@@ -22,7 +22,7 @@ developmentChains.includes(network.name)
                   //setting a listener
                   console.log("setting up listener")
                   await new Promise(async (resolve, reject) => {
-                      raffle.once("winnerPIcked", async () => {
+                      lottery.once("winnerPIcked", async () => {
                           console.log("winnerPIcked event fired")
 
                           try {
@@ -32,12 +32,12 @@ developmentChains.includes(network.name)
                               const winnerEndingBalance = await accounts[0].getBalance()
                               const endingTimeStamp = await lottery.getLatestTimeStamp()
 
-                              await expect(lottery.getNumberOfPlayers(0)).to.be.reverted
+                              await expect(lottery.GetPlayers(0)).to.be.reverted
                               assert.equal(recentWinner.toString(), accounts[0].address)
                               assert.equal(rafflestate, 0) //0 @ open , 1 @ calculating
                               assert.equal(
                                   winnerEndingBalance.toString(),
-                                  winnerStartingBalance.add(getEntranceFee).toString()
+                                  winnerStartingBalance.add(entranceFee).toString()
                               )
                               assert(endingTimeStamp > startingTimeStamp)
                               resolve()

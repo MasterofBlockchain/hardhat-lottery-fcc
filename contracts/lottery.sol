@@ -137,6 +137,7 @@ contract lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     function performUpkeep(
         bytes calldata /*performData*/
     ) external override {
+        //its `if` and `else` statement
         // if its true then it will pass(1)
         (bool upkeepNeeded, ) = checkUpkeep("");
         // require(upkeepNeeded, "Upkeep not needed");

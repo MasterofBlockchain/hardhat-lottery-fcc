@@ -49,5 +49,44 @@ undefined
 
 
 
+-----------------------Javascript objects and variables----------------------------
+
+let's say Car is a `object` and its `proprties` are 
+
+`car.name = Fiat, car.model = 500, car.weight = 850kg, car.color = white,`
+
+and its `methods` are -
+
+`car.start(), car.drive(), car.brake(), car.stop()`
+
+2- let `car` = `fiat` 
+// `car` is a variable name and `fiat` is its value
+
+3- const car = `{type:"Fiat", model:"500", color:"white"};`
+//Objects are variables too. But objects can contain many values.
+// `car` is a here a `object` and  has contaning lot of values.
+// The name:values pairs in JavaScript objects are called properties:
+
+
+
+--------------------------wait.(1)-------------------------------
+# its ethers.js functions helps us to get the recipt.
+# we can get anynumber of it. number simply means how many block we wnt to mine
+# the more the number the more it take to mine.
+# good ppractice is to out maxium `2` number.
+
+
+-----------------------------how contract is gonna work-----------------------------
+
+# we enter lottery
+# its gonna hit `keepers` .. they gonna be in `checkup` keep and it will hit `performupkeep`.
+
+# now `performupkeep` will call `vrf`
+
+
+
+
+
+
 --------------------DEPLOYED----------------------------------
 https://goerli.etherscan.io/address/0x67d000Ab100Cee0224CbF9F71abafD6F45f3E804
